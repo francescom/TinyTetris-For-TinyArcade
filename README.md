@@ -14,6 +14,7 @@ At the moment it runs. Without audio and without bitmaps.
 I plan to add a splash screen (already drawn) and some audio music (like original or digitized)
 
 Possible extensions
-Hi scores +prefs on µSD
-Moves/drops audio effects
-a global menu (start, pause, restart, mute effects, mute music, change size, show scores)
+
+- Hi scores +prefs on µSD
+- Moves/drops audio effects
+- a global menu (start, pause, restart, mute effects, mute music, change size, show scores)
