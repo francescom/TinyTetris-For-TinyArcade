@@ -337,7 +337,7 @@ void drawNext(int x,int y) {
 	fillRect(x-blockSize*3,y-blockSize*3,x+blockSize*3,y+blockSize*3,0x000000);
 	frameRect(x-blockSize*3,y-blockSize*3,x+blockSize*3,y+blockSize*3,0x777777);
 	for(int i=0;i<4;i++) {
-		drawBlockAt(x+blockSize*nextPiece.structure.items[i].x,y+blockSize*nextPiece.structure.items[i].y,colors[nextPiece.structure.color]);
+		drawBlockAt(x+blockSize*nextPiece.structure.items[i].x,y-blockSize*nextPiece.structure.items[i].y,colors[nextPiece.structure.color]);
 	}
 }
 void clearPiece() {
