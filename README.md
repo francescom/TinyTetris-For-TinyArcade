@@ -10,3 +10,5 @@ for the TinyArcade:
 https://www.kickstarter.com/projects/kenburns/tiny-arcade-a-retro-tiny-playable-game-cabinet
 
 
+At the moment it runs. Without audio and without bitmaps.
+I plan to add a splash screen (already drawn) and some audio music (like original or digitized)
