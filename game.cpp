@@ -6,6 +6,7 @@
 #include "colors.h"
 #include "tinygraphics.h"
 #include "common.h"
+#include "images.h"
 
 #include <TinyScreen.h>
 extern TinyScreen display;
@@ -176,31 +177,58 @@ void showScore() {
 	display.print("");
 }
 
-void drawBackground() {
-	int r,g,b;
-	long color,color2;
-	fillRect(0,0,96,64,0x000000);
-	for(int y=0;y<64;y+=4) {
-		r=128+(int)(127*cos((float)(y-0+colorMove)*6.28/64));
-		g=128+(int)(127*cos((float)(y-21+colorMove)*6.28/64));
-		b=128+(int)(127*cos((float)(y-42+colorMove)*6.28/64));
-		color=rgbColor(r,g,b);
-		for(int x=0;x<96;x+=4) {
-			color2=colorTint(color,16-max(0,8*(abs(x-48)-32)));
-			frameRect(x, y, x+3, y+3, color2);	
+void drawBackBlockAt(int x, int y) {
+  int r,g,b;
+  long color,color2;
+  r=128+(int)(127*cos((float)(y-0+colorMove)*6.28/64));
+  g=128+(int)(127*cos((float)(y-21+colorMove)*6.28/64));
+  b=128+(int)(127*cos((float)(y-42+colorMove)*6.28/64));
+  color=rgbColor(r,g,b);
+  color2=colorTint(color,16-max(0,8*(abs(x-48)-32)));
+  fillRect(x,y,x+4,y+4,0x000000);
+  frameRect(x, y, x+3, y+3, color2);
+}
 
-		}
-	}
-	
-	colorMove+=2;
+void drawBackground() {
+
+  int primes[]={2,3,5,7,11,13,17,23,27};
+  for(int doOnly=7;doOnly>=0;doOnly--) {
+    for(long i=0;i<24*16;i++) {
+      int x=(i%24);
+      int y=(i/24);
+       if(i%primes[doOnly]==0 && doOnly>1) {
+          drawBackBlockAt(x*4,y*4);
+        }
+        if(x%primes[doOnly]==0 && y%primes[doOnly]==0) {
+          drawBackBlockAt(x*4,y*4);
+        }
+    }
+    delay(10);
+  }
+
+   for(int y=0;y<16;y++) {
+    for(int x=0;x<24;x++) {
+      if(x%2!=0 && y%2!=0) drawBackBlockAt(x*4,y*4);
+    }
+  }
+   delay(10);
+   
+   for(int y=0;y<16;y++) {
+    for(int x=0;x<24;x++) {
+      if(x%2 !=y%2) drawBackBlockAt(x*4,y*4);
+    }
+  }
+
 	int left=xOrigin-blockSize*fieldWidth/2;
 	int top=yOrigin-blockSize*fieldHeight;
 	int right=xOrigin+blockSize*fieldWidth/2;
 	int bottom=yOrigin;
 
 	
-	fillRect(left,0,right,65,0x000000);
-
+  for(int x=10;x>=0;x--) {
+  	fillRect(left+x,0,right-x,65,0x000000);
+    delay(20-x*2);
+  }
 	drawLine(left-1,0,left-1,63,colorTint(0xffffff,-10));
 	drawLine(left-2,0,left-2,63,colorTint(0xffffff,0));
 	drawLine(left-3,0,left-3,63,colorTint(0xffffff,-30));
@@ -357,8 +385,54 @@ void initPiece() {
 }
 
 
+void showSplashFor(uint16_t millisecs) {
+  uint8_t mve=0;
+  uint8_t au=0;
+  uint8_t ausp=1;
+  display.setBitDepth(false); // 8 bit for splash
+  for (uint8_t x = 0; x < 48; x++) {
+   for (uint8_t y = 0; y < 64; y++) {
+      mve=random(0,6);
+      au+=ausp;
+      if(au==0 || au==10) ausp=-ausp;
+      analogWrite(A0, au*4);
+
+      display.goTo(47-x+1, y);
+      display.startData();
+      display.writeBuffer((uint8_t *)splash_data+y*96+(48-x), 2*(x));
+      display.endTransfer();
+      
+      display.goTo(47-x+mve, y);
+      display.startData();
+      display.writeBuffer((uint8_t *)whitePix,1);
+      display.endTransfer();
+
+      display.goTo(48+x+1-mve, y);
+      display.startData();
+      display.writeBuffer((uint8_t *)whitePix,1);
+      display.endTransfer();
+      
+      // analogWrite(A0, mve*4);
+   }
+   delay(1+x*2);
+ }
+ for (uint8_t y = 0; y < 64; y++) {
+    display.goTo(0, y);
+    display.startData();
+    display.writeBuffer((uint8_t *)splash_data+y*96, 96);
+    display.endTransfer();
+ }
+ delay(millisecs);
+ display.setBitDepth(true); // 16 bit for rest of the game
+ analogWrite(A0, 0);
+ analogWrite(A0, analogRead(A0));
+}
+
 
 void resetGame() {
+
+  showSplashFor(2000);
+  
 	setupParams();
 	colorMove=0;
 	gameSpeed=startingSpeed;
@@ -380,13 +454,16 @@ void resetGame() {
 }
 
 
+
 void gameSetup() {
 
-fieldSet(5,5,3);
-serialPrintField();
-SerialUSB.println(fieldGet(5,5));
+  fieldSet(5,5,3);
+  serialPrintField();
+  SerialUSB.println(fieldGet(5,5));
 
 
+  
+  
   
 	randomSeed(analogRead(0));
 	
