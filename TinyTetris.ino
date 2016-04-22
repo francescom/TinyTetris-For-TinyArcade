@@ -9,7 +9,6 @@
 
 #include "common.h"
 
-#include <SdFat.h>
 #include <Wire.h>
 #include <SPI.h>
 #include "joystick-local.h"
@@ -26,16 +25,6 @@ unsigned long millisTime;
 TinyScreen display = TinyScreen(TinyScreenPlus);
 
 
-
-SdFat sd;
-SdFile dir;
-SdFile file;
-SdFile vidFile;
-uint8_t buffer[96 * 64 * 2];
-
-
-
-
 void setup () {
   analogWrite(A0, analogRead(A0));//Set audio output to avoid picking up noise, even though audio isn't used
   pinMode(TinyArcadePin2, INPUT_PULLUP);
@@ -45,7 +34,7 @@ void setup () {
 	
 	
 	// SerialUSB.begin(115200);
- delay(1000);
+  delay(1000);
 	display.begin();
 	// display.setFlip(1); Requires key flipping
 	display.setBrightness(15);
