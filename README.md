@@ -10,8 +10,14 @@ for the TinyArcade:
 https://www.kickstarter.com/projects/kenburns/tiny-arcade-a-retro-tiny-playable-game-cabinet
 
 
-At the moment it runs. Without audio and without bitmaps.
-I plan to add a splash screen (already drawn) and some audio music (like original or digitized)
+At the moment it runs, has background music and a splash screen.
+It looks for a "Tinytris" folder on the SD card with inside a "music.raw" file.
+Three alternatives music are available, choose the one you like most and rename it music.raw
+
+Help
+
+Push the 2 buttons together to reset the game.
+
 
 Possible extensions
 
