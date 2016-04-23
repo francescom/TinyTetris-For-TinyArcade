@@ -6,6 +6,7 @@ const char audioPin=9;
 #define GAME
 
 
+#include "TinyAudio/TinyAudio.h"
 
 
 /* ..Declarations.. */
@@ -18,5 +19,6 @@ void playShotHits();
 
 extern bool audioIsPaused;
 extern bool gameIsOver;
+extern MainAudioTimeline audioTimeline;
 
 #endif

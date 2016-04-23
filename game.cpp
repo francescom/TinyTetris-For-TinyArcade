@@ -11,9 +11,11 @@
 #include <TinyScreen.h>
 extern TinyScreen display;
 
+#include "TinyAudio/TinyAudio.h"
+extern MainAudioTimeline audioTimeline;
 
 
-bool audioIsPaused=false; // this is exported outside
+bool audioIsPaused=false; // this is exported outside // unused at the moment this was for old "midi type/notes" music
 bool gameIsOver=false;
 bool audioOn=true; // this saves value after GameOvers
 
@@ -190,7 +192,6 @@ void drawBackBlockAt(int x, int y) {
 }
 
 void drawBackground() {
-
   int primes[]={2,3,5,7,11,13,17,23,27};
   for(int doOnly=7;doOnly>=0;doOnly--) {
     for(long i=0;i<24*16;i++) {
@@ -276,6 +277,7 @@ void drawField(int fromLine) {
 	//fillRect(left,0,right,63,0x000000);
 	for(uint8_t i=fromLine;i<fieldHeight;i++) {
 		for(uint8_t j=0;j<fieldWidth;j++) {
+      audioTimeline.doLoop();
 			block=fieldGet(j,i);
 			drawBlock(j,i,colors[block]);
 		}
@@ -312,6 +314,7 @@ void cleanCurrentLines() {
 	}
 	drawField(min);
 	for(int i=max;i>=min;i--) {
+    audioTimeline.doLoop();
 		if(testLine(i)) {
 			countHits++;
 			stripLine(i);
@@ -472,8 +475,12 @@ void gameSetup() {
 	moveTime=millis();
 	moveTime2=millis();
 	
-	resetGame();
-
+  audioInterruptPaused=true;
+ 
+  resetGame();
+  audioInterruptPaused=false;
+ 
+	
 }
 
 void gameOver() {
@@ -495,8 +502,10 @@ void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 	boolean btnBR=getButtonState(buttons,TS_BUT_BR);
 	
 	if(btnR && btnL) {
-		resetGame();
+    audioInterruptPaused=true;
+ 		resetGame();
 		delay(1000);
+    audioInterruptPaused=false;
 	}
 
     int delayAfterRender=0;
