@@ -1,4 +1,4 @@
-# TinyTetris-For-TinyArcade
+# Tinytris-For-TinyArcade
 
 Adaptation of my TinyTetris (on codebender.cc and hackster.io):
 
