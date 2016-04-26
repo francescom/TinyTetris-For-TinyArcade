@@ -2,9 +2,11 @@
 #define __AudioTimeline_h
 
 #include "AudioItem.h"
+#include "tiny_audio_setup.h"
 
 
-const unsigned int MAX_TIMELINE_CHANNELS=100;
+const unsigned int MAX_TIMELINE_CHANNELS=200;
+
 
 class AudioTimeline: public AudioItem { // a timeline is really an audio item (could be nested)!
 	public:
@@ -29,6 +31,16 @@ class AudioTimeline: public AudioItem { // a timeline is really an audio item (c
 	uint32_t fixedFrame(uint32_t pos);
 	uint16_t getNextSample();
 	boolean loadIf();
+	
+	static inline uint16_t mixAdd(uint16_t a,uint16_t b) {
+		return a+b-HALF_OF_DAC;
+	}
+	static inline uint16_t zeroSound() {
+		return HALF_OF_DAC;
+	}
+	static inline uint16_t trim(uint16_t s) {
+		return ((s>MIN_OF_DAC)?((s<MAX_OF_DAC)?s:MAX_OF_DAC):MIN_OF_DAC);
+	}
 };
 
 

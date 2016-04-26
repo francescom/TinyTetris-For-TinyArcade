@@ -2,6 +2,7 @@
 #define __AudioItem_h
 #include <stdint.h>
 #include "Arduino.h"
+#include "tiny_audio_setup.h"
 
 #ifndef nullPtr
 #define nullPtr 0
@@ -23,6 +24,7 @@ class AudioItem {
   boolean loop=false;
   boolean errorTxt="";
   boolean playing=true;
+  uint8_t volumePerc=100;
   
   AudioItem();
   AudioItem(uint32_t myPos);
@@ -43,6 +45,9 @@ class AudioItem {
   static uint16_t eightBitsToUnsigned12(unsigned char b);
   static int16_t eightBitsToSigned12(unsigned char b);
 
+  inline int32_t reduceVolume(int32_t s) {
+  	return ((int32_t)s-(int32_t)HALF_OF_DAC)*volumePerc/100+(int32_t)HALF_OF_DAC;
+  }
 };
 
 

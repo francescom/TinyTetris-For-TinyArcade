@@ -39,6 +39,6 @@ uint16_t AudioItemRawData8bit::getSampleAt(uint32_t pos) {
       return 0;
     }
   }
-  return data[pos%length];
+  return reduceVolume(data[pos%length]<<boost);
  }
 

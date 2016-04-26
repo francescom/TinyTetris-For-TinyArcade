@@ -1,4 +1,5 @@
 #include "tiny_audio_utils.h"
+#include "tiny_audio_setup.h"
 
 
 
@@ -20,18 +21,24 @@ volatile prog_uchar getSineFromMem(uint_fast8_t pos) {
 // Freq is multiplied by 10x
 uint16_t playSawFreq(uint_fast16_t f,uint_fast8_t a,uint32_t x) {
   uint_fast16_t fq=(11025/f)*10;
-  uint_fast16_t prop=256/fq;
-  return 256+(x%fq)*prop;
+  uint_fast16_t prop=HALF_OF_DAC_MINUS/fq;
+  return HALF_OF_DAC+(x%fq)*prop;
 }
 
 
 // Freq is multiplied by 10x
 uint16_t playSineFreq(uint_fast16_t f,uint_fast8_t a,uint32_t x) { // use table lookup and interpolation for sin instead
-  return (int16_t)(getSineFromMem((x*f/10*0xFF/11025)%0xFF)*a/100 );
+  return (int16_t)((uint32_t)getSineFromMem((x*f/10*0xFF/11025)%0xFF)*((uint32_t)HALF_OF_DAC_MINUS)/255L*a/100);
   // return (int16_t)( 256+round(256*sin((double)x*f/11025.0*2*PI)*a/100) );
 }
 // find a nice instrument play function (organ is the bast candidate 440Hz+660Hz*.2 http://music.stackexchange.com/questions/8214/how-can-i-replicate-the-sound-of-an-instrument )
-
+// Freq is multiplied by 10x
+uint16_t playOrganFreq(uint_fast16_t f,uint_fast8_t a,uint32_t x) { // use table lookup and interpolation for sin instead
+  return 
+  	(int16_t)((uint32_t)getSineFromMem((x*f/10*0xFF/11025)%0xFF)*((uint32_t)HALF_OF_DAC_MINUS)/255L*a/100)+
+  	(int16_t)((uint32_t)getSineFromMem((x*(2*f/3)/10*0xFF/11025)%0xFF)*((uint32_t)HALF_OF_DAC_MINUS)/255L*a/100);
+  // return (int16_t)( 256+round(256*sin((double)x*f/11025.0*2*PI)*a/100) );
+}
 
 
 

@@ -24,6 +24,6 @@ void AudioItemWave::init(uint32_t myPos,waveGeneratorFunction myFunc) {
 
 uint16_t AudioItemWave::getSampleAt(uint32_t pos) {
   if(!enabled) return 0;
-  if(generator!=nullPtr) return generator(pos);
+  if(generator!=nullPtr) return reduceVolume(generator(pos));
 }
 

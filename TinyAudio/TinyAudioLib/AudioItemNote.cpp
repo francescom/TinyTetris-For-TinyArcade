@@ -34,7 +34,7 @@ void AudioItemNote::init(uint32_t myPos,noteGeneratorFunction myFunc,int startin
 }
 uint16_t AudioItemNote::getSampleAt(uint32_t pos) {
   if(!enabled) return 0;
-  if(generator!=nullPtr) return generator(frequency,amplitude,pos); // Freq is multiplied by 10x
+  if(generator!=nullPtr) return reduceVolume(generator(frequency,amplitude,pos)); // Freq is multiplied by 10x
 }
 
 

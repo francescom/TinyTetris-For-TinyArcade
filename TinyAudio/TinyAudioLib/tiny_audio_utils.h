@@ -1,3 +1,5 @@
+#ifndef __tiny_audio_utils_h
+#define __tiny_audio_utils_h
 
 #include <SPI.h>
 
@@ -26,3 +28,5 @@ int frequencyFromNote(int halfStepsFromA4);
 
 
 
+
+#endif // __tiny_audio_utils_h

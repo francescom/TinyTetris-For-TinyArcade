@@ -22,7 +22,7 @@ uint32_t AudioTimeline::now() {
 
 int AudioTimeline::addItem(AudioItem * theItem) {
   if(channels>=MAX_TIMELINE_CHANNELS) {
-     error=true;
+     error=true; // MMmmm.. this will kill all the timeline playing forever for one channel overflow... 8| ok for debugging, but..
      errorTxt="Channels exausted";
      SerialUSB.print("X");
      return -1;
@@ -40,7 +40,7 @@ int AudioTimeline::addTemporaryItemNow(AudioItem * theItem) {
 
 int AudioTimeline::addTemporaryItemAt(AudioItem * theItem,uint32_t frame) {
   if(channels>=MAX_TIMELINE_CHANNELS) {
-     error=true;
+     error=true; // MMmmm.. this will kill all the timeline playing forever for one channel overflow... 8| ok for debugging, but..
      errorTxt="Channels exausted";
      SerialUSB.print("X");
      return -1;
@@ -90,7 +90,7 @@ void AudioTimeline::dispose() { // not a distructor, just useless at the moment
   }
 }
 uint16_t AudioTimeline::getSampleAt(uint32_t pos) {
-  uint16_t sample=0;
+  uint16_t sample=zeroSound();
 
   uint32_t iHaveLength=0;
   uint32_t itemHasLength=0;
@@ -115,25 +115,29 @@ uint16_t AudioTimeline::getSampleAt(uint32_t pos) {
       if(itemHasEnd>iHaveLength) itemHasEnd=itemHasEnd%iHaveLength; // don't if equal or end will be 0
       if(itemHasEnd>=itemStart) {
         if(pos<itemStart || pos>itemHasEnd) continue; // out of sound time
-        sample+=allItems[i]->getSampleAt(pos-itemStart);
+        
+        
+        sample=mixAdd(sample,allItems[i]->getSampleAt(pos-itemStart));
+        
       } else { // soumd starts inside timeline and ends out of timeline the end is % (modulus) length so it becomes smaller than start
         // problems if single sound is longer than the timeline, but this is for effect sounds, should not happen
         if(pos<itemStart && pos>itemHasEnd) continue; // out of sound time: between end(<) and start(>)
-        sample+=allItems[i]->getSampleAt(pos+(iHaveLength-itemStart));
+        sample=mixAdd(sample,allItems[i]->getSampleAt(pos+(iHaveLength-itemStart)));
       }
     } else if(itemHasLength) {  // Sound is limited but timeline is unlimited
       if(pos<itemStart || pos>itemHasEnd) continue; // out of sound time
-      sample+=allItems[i]->getSampleAt(pos-itemStart);
+      sample=mixAdd(sample,allItems[i]->getSampleAt(pos-itemStart));
     } else if(iHaveLength) { // Timeline is limited and sound is infinite or looping
       if(pos<itemStart) continue; // out of sound time
-      sample+=allItems[i]->getSampleAt(pos-itemStart);
+      sample=mixAdd(sample,allItems[i]->getSampleAt(pos-itemStart));
     } else {
       if(pos<itemStart && loopCount==0) continue; // out of sound time
-      sample+=allItems[i]->getSampleAt(pos-itemStart);
+      sample=mixAdd(sample,allItems[i]->getSampleAt(pos-itemStart));
     }
   }
-  return sample;
+  return trim(reduceVolume(sample));
 }
+
 uint32_t AudioTimeline::nextFrame() {
   if(!loop || length==0) return ++soundHeadPos;
   if(++soundHeadPos>=length) {

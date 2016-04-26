@@ -64,7 +64,7 @@ uint16_t AudioItemFile::getNextSample() {
     if(!enabled || !playing) return 0;
     uint32_t oldLoopPos=loopPos;
     loopPos=soundHeadPos%length;
-
+	
     if(soundHeadPos>=length) {
       if(loop) {
             if(loopPos!=oldLoopPos+1) {
@@ -81,7 +81,7 @@ uint16_t AudioItemFile::getNextSample() {
 
     if(loopingBuffer.moveToNext()) {
         soundHeadPos++;
-        return loopingBuffer.getByte();
+        return reduceVolume(loopingBuffer.getByte()<<boost);
     } else {
         // error=true;
         // errorTxt="Head out of buffer"; //  (did you forget to load?)
