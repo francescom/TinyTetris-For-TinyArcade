@@ -45,7 +45,16 @@ int AudioTimeline::addTemporaryItemAt(AudioItem * theItem,uint32_t frame) {
      SerialUSB.print("X");
      return -1;
   }
-
+  
+  /* UNSURE */
+  if(theItem->parent==this) return -1;
+  
+  /* VERY UNSURE */
+  if(theItem->parent!=nullPtr) theItem->parent->removeItem(theItem);
+  
+  /* END */
+  
+  
   theItem->timelinePosition=frame;
   theItem->soundHeadPos=0;
   theItem->loop=false;

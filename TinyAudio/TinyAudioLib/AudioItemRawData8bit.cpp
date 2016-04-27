@@ -22,7 +22,7 @@ void AudioItemRawData8bit::init(uint32_t myPos,unsigned char *mydata,uint32_t my
 }
 
 uint16_t AudioItemRawData8bit::getSampleAt(uint32_t pos) {
-  if(!enabled) return 0;
+  if(!enabled) return zeroSound();
 
   soundHeadPos=pos;
   uint32_t oldLoopPos=loopPos;
@@ -36,7 +36,7 @@ uint16_t AudioItemRawData8bit::getSampleAt(uint32_t pos) {
     } else {
       onEnded();
       stop();
-      return 0;
+      return zeroSound();
     }
   }
   return reduceVolume(data[pos%length]<<boost);

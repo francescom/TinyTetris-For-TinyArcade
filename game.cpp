@@ -11,8 +11,14 @@
 #include <TinyScreen.h>
 extern TinyScreen display;
 
-#include "TinyAudio/TinyAudio.h"
 extern MainAudioTimeline audioTimeline;
+extern AudioItemRawData8bit dropLineEffect[4];
+extern AudioItemRawData8bit lostEffect;
+extern AudioItemRawData8bit hitEffect;
+extern AudioItemRawData8bit freezeEffect;
+
+
+#include "TinyAudio/TinyAudio.h"
 
 
 bool audioIsPaused=false; // this is exported outside // unused at the moment this was for old "midi type/notes" music
@@ -96,6 +102,7 @@ uint8_t field[maxFieldWidth][maxFieldHeight];
 
 
 
+piece savePiece;
 piece currentPiece;
 piece nextPiece;
 
@@ -320,6 +327,7 @@ void cleanCurrentLines() {
 			stripLine(i);
 			drawField(i);
 			score+=5+2*countHits;
+      audioTimeline.playEffect((AudioItem*)&dropLineEffect[countHits-1]);
 			lines++;
 			if(level*10<lines && level<=10) {
 				level++;
@@ -336,6 +344,7 @@ void cleanCurrentLines() {
 	// fillRect(left,0,right,60,0x000000);
 }
 void freezePiece() {
+  audioTimeline.playEffect((AudioItem*)&freezeEffect);
 	for(int i=0;i<4;i++) {
 		fieldSet(currentPiece.pos.x+currentPiece.structure.items[i].x,currentPiece.pos.y+currentPiece.structure.items[i].y,currentPiece.structure.color);
 	}
@@ -371,9 +380,9 @@ void drawNext(int x,int y) {
 		drawBlockAt(x+blockSize*nextPiece.structure.items[i].x,y-blockSize*nextPiece.structure.items[i].y,colors[nextPiece.structure.color]);
 	}
 }
-void clearPiece() {
+void clearPiece(piece*aPiece) {
 	for(int i=0;i<4;i++) {
-		drawBlock(currentPiece.pos.x+currentPiece.structure.items[i].x,currentPiece.pos.y+currentPiece.structure.items[i].y,colors[0]);
+		drawBlock(aPiece->pos.x+aPiece->structure.items[i].x,aPiece->pos.y+aPiece->structure.items[i].y,colors[0]);
 	}
 }
 
@@ -487,6 +496,7 @@ void gameOver() {
 	gameStatus=99;
 	gameIsOver=true;
 	audioIsPaused=true;
+  audioTimeline.playEffect((AudioItem*)&lostEffect);
 }
 
 
@@ -500,6 +510,8 @@ void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 	boolean btnTL=getButtonState(buttons,TS_BUT_TL);
 	boolean btnTR=getButtonState(buttons,TS_BUT_TR);
 	boolean btnBR=getButtonState(buttons,TS_BUT_BR);
+
+  boolean moved=false;
 	
 	if(btnR && btnL) {
     audioInterruptPaused=true;
@@ -521,22 +533,26 @@ void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 			} else {
 			}
 		};
-		
-		clearPiece();
+
+    savePiece=currentPiece;
 	    
 	    if((lX>64)) {
 	    	if(millis() - moveTime > gameSpeed/4+100) {
 		    	currentPiece.pos.x++;
 		    	if(testPiece()) {
 		    		currentPiece.pos.x--;
-		    	} else moveTime=millis();
+            audioTimeline.playEffect((AudioItem*)&hitEffect);
+            moveTime=millis();
+		    	} else {moved=true;moveTime=millis();}
 	    	}
 	    } else if(lX<-64) {
 	    	if(millis() - moveTime > gameSpeed/4+100) {
 	    		currentPiece.pos.x--;
 		    	if(testPiece()) {
 		    		currentPiece.pos.x++;
-		    	} else moveTime=millis();
+            audioTimeline.playEffect((AudioItem*)&hitEffect);
+            moveTime=millis();
+		    	} else{moved=true;moveTime=millis();}
 	    	}
 	    } else moveTime=0;
 	    
@@ -549,16 +565,17 @@ void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 			    		currentPiece.pos.x-=2; // next left
 			    		if(testPiece()) {
 			    			currentPiece.pos.x+=3; // two right (for bar)
-				      		if(testPiece()) {
+                if(testPiece()) {
 				    			currentPiece.pos.x-=4; // two left (for bar)
-					      		if(testPiece()) {
-					      			currentPiece.pos.x+=2; // no way, can't turn
+                  if(testPiece()) {
+                    currentPiece.pos.x+=2; // no way, can't turn
 					   				rotatePieceLeft();
-					    		} else moveTime2=millis();
-				    		} else moveTime2=millis();
-				   		} else moveTime2=millis();
-			   		} else moveTime2=millis();
-		    	} else moveTime2=millis();
+                    audioTimeline.playEffect((AudioItem*)&hitEffect);
+					    		} else {moved=true;moveTime2=millis();}
+				    		} else  {moved=true;moveTime2=millis();}
+				   		} else  {moved=true;moveTime2=millis();}
+			   		} else  {moved=true;moveTime2=millis();}
+		    	} else  {moved=true;moveTime2=millis();}
 	    	}
 	    } else if(btnL) {
 	    	if(millis() - moveTime2 > gameSpeed/4+100) { // do not do a simple AND with previous line (moveTime2=0; would fail)
@@ -571,33 +588,37 @@ void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 			    			currentPiece.pos.x+=3; // two right (for bar)
 				      		if(testPiece()) {
 				    			currentPiece.pos.x-=4; // two left (for bar)
-					      		if(testPiece()) {
-					      			currentPiece.pos.x+=2; // no way, can't turn
+                  if(testPiece()) {
+                    currentPiece.pos.x+=2; // no way, can't turn
 					   				rotatePieceRight();
-					    		} else moveTime2=millis();
-				    		} else moveTime2=millis();
-				   		} else moveTime2=millis();
-			   		} else moveTime2=millis();
-		    	} else moveTime2=millis();
+                    audioTimeline.playEffect((AudioItem*)&hitEffect);
+					    		} else {moved=true;moveTime2=millis();}
+				    		} else {moved=true;moveTime2=millis();}
+				   		} else {moved=true;moveTime2=millis();}
+			   		} else {moved=true;moveTime2=millis();}
+		    	} else {moved=true;moveTime2=millis();}
 	    	}
 	    } else { // if REALYY not pressing rotation keys next press will be faster
 	    	moveTime2=0;
 	    }
 	    
 	    if(lY<-64 || (millis() - dropTime > gameSpeed)) {
-	    	if(lY<-64) score++;
+      	if(lY<-64) score++;
 	 		  currentPiece.pos.y--;
 	   		if(testPiece()) {
 	  			currentPiece.pos.y++;
+          moved=false; // Avoid later clearing after froze!!! Bug fix
 		   		freezePiece();
 		   		if(currentPiece.pos.y>=fieldHeight) {
 		   			gameOver();
 		   		} else initPiece();
 	    	} else {
-				dropTime=millis();
+				  dropTime=millis();
+          moved=true;
 	    	}
 	    }
-	    drawPiece();
+     if(moved) clearPiece(&savePiece);
+	   drawPiece();
 	}
     
     if(delayAfterRender>0) delay(delayAfterRender);

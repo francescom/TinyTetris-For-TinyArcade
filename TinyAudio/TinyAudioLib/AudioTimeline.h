@@ -35,9 +35,6 @@ class AudioTimeline: public AudioItem { // a timeline is really an audio item (c
 	static inline uint16_t mixAdd(uint16_t a,uint16_t b) {
 		return a+b-HALF_OF_DAC;
 	}
-	static inline uint16_t zeroSound() {
-		return HALF_OF_DAC;
-	}
 	static inline uint16_t trim(uint16_t s) {
 		return ((s>MIN_OF_DAC)?((s<MAX_OF_DAC)?s:MAX_OF_DAC):MIN_OF_DAC);
 	}

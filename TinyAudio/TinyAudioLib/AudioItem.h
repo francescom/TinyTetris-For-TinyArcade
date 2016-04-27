@@ -48,6 +48,9 @@ class AudioItem {
   inline int32_t reduceVolume(int32_t s) {
   	return ((int32_t)s-(int32_t)HALF_OF_DAC)*volumePerc/100+(int32_t)HALF_OF_DAC;
   }
+  static inline uint16_t zeroSound() {
+	return HALF_OF_DAC;
+  }
 };
 
 

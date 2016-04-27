@@ -21,6 +21,9 @@
 
 
 #include "audio/brb.h"
+#include "audio/ting.h"
+#include "audio/click.h"
+#include "audio/bip.h"
 
 unsigned long millisTime;
 
@@ -31,7 +34,10 @@ SdFat sd;
 TinyScreen display = TinyScreen(TinyScreenPlus);
 
 
-AudioItemRawData8bit testSoundEffect; // (0,(unsigned char*)brb,4412);
+AudioItemRawData8bit hitEffect; // (0,(unsigned char*)brb,4412);
+AudioItemRawData8bit freezeEffect; // (0,(unsigned char*)brb,4412);
+AudioItemRawData8bit lostEffect; // (0,(unsigned char*)brb,4412);
+AudioItemRawData8bit dropLineEffect[4]; // (0,(unsigned char*)brb,4412);
 AudioItemFile testStream; // (0,(char*)"/Tinytris/music.raw");
 
 AudioItemWave testSoundWave; // (0,waveGeneratorTest);
@@ -70,16 +76,31 @@ void setup () {
   //audio output config
   analogWrite(A0, 0);
   tcConfigure(11025);
-  testSoundEffect.init(0,(unsigned char*)brb,4412);
- 
+  hitEffect.init(0,(unsigned char*)click,110);
+  freezeEffect.init(0,(unsigned char*)bip,1089);
+  lostEffect.init(0,(unsigned char*)ting,6457);
+  dropLineEffect[0].init(0,(unsigned char*)brb,4412);
+  dropLineEffect[1].init(0,(unsigned char*)brb,4412); // same data, different playing info (head position, status)
+  dropLineEffect[2].init(0,(unsigned char*)brb,4412); // same data
+  dropLineEffect[3].init(0,(unsigned char*)ting,6457);
+  
+  hitEffect.volumePerc=15;
+  dropLineEffect[0].volumePerc=50;
+  dropLineEffect[1].volumePerc=50;
+  dropLineEffect[2].volumePerc=50;
+  dropLineEffect[3].volumePerc=50;
+  
   testStream.init(0,(char*)"/Tinytris/music.raw");
   testStream.loop=true;
   audioTimeline.loop=true;
+  testStream.volumePerc=50;
+  
   audioTimeline.length=testStream.length;
   
   audioTimeline.addItem((AudioItem*)&testStream);
   tcStartCounter();
-  
+
+  // audioTimeline.playEffect((AudioItem*)&dropLineEffect[0]);
 }
 
 

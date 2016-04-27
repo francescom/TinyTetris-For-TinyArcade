@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "Arduino.h"
 
-const uint16_t bufferSize = 2048;
+const uint16_t bufferSize = 256;
 extern uint16_t audioBuffer[bufferSize];
 extern volatile uint32_t sampleIndex;
 extern volatile boolean audioInterruptPaused;
