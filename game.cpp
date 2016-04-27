@@ -436,8 +436,6 @@ void showSplashFor(uint16_t millisecs) {
  }
  delay(millisecs);
  display.setBitDepth(true); // 16 bit for rest of the game
- analogWrite(A0, 0);
- analogWrite(A0, analogRead(A0));
 }
 
 
