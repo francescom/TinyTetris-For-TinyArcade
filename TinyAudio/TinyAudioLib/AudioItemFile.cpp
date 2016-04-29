@@ -37,8 +37,8 @@ void AudioItemFile::init(uint32_t myPos,char *myFileName) {
   SerialUSB.print(fileName);
   SerialUSB.print(F(" found, size: "));
   SerialUSB.println(fileSize);
-  myFile.curPosition();
-  myFile.seekSet(myFile.curPosition() );
+  // myFile.curPosition();
+  // myFile.seekSet(myFile.curPosition() );
   loopingBuffer.init(fileBuffer,myBufferSize,&myFile);
   loadIf();
 }
