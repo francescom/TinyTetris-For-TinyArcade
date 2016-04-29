@@ -14,6 +14,9 @@ At the moment it runs, has background music and a splash screen.
 It looks for a "Tinytris" folder on the SD card with inside a "music.raw" file.
 Three alternatives music are available, choose the one you like most and rename it music.raw
 
+Music is a personal arrangement, made with Garageband, derived from a classic "Korobeiniki" (Russian: Коробейники) midi file.
+https://en.wikipedia.org/wiki/Korobeiniki
+
 
 **Help**
 
