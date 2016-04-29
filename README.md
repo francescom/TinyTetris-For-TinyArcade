@@ -20,10 +20,13 @@ https://en.wikipedia.org/wiki/Korobeiniki
 
 **Help**
 
-Push the 2 buttons together to reset the game and toggle blocks size. Larger blocks are easier to see but leave less vertical space to play.
+- Joystick moves pieces left + right + down=fast
+- Buttons rotate in two directions (right button is "classic" top-goes-right rotation)
+
+**Push the 2 buttons together** to reset the game and toggle blocks size. Larger blocks are easier to see but leave less vertical space to play.
 
 
-Possible extensions
+**Possible extensions**
 
 - Hi scores +prefs on µSD: at the moment a blank prefs file is saved inside the app folder
 - a global options menu (start, pause, restart, mute effects, mute music, change size, show scores)
