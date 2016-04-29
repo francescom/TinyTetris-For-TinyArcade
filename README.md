@@ -14,13 +14,13 @@ At the moment it runs, has background music and a splash screen.
 It looks for a "Tinytris" folder on the SD card with inside a "music.raw" file.
 Three alternatives music are available, choose the one you like most and rename it music.raw
 
-Help
 
-Push the 2 buttons together to reset the game.
+**Help**
+
+Push the 2 buttons together to reset the game and toggle blocks size. Larger blocks are easier to see but leave less vertical space to play.
 
 
 Possible extensions
 
-- Hi scores +prefs on µSD
-- Moves/drops audio effects
-- a global menu (start, pause, restart, mute effects, mute music, change size, show scores)
+- Hi scores +prefs on µSD: at the moment a blank prefs file is saved inside the app folder
+- a global options menu (start, pause, restart, mute effects, mute music, change size, show scores)
