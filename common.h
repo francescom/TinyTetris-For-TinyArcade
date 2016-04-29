@@ -2,6 +2,10 @@
 #define COMMON_H
 
 
+#define PREFS_FILE "/Tinytris/prefs.prf"
+#define MUSIC_FILE "/Tinytris/music.raw"
+
+
 
 #define TS_BUT_BL 0
 #define TS_BUT_TL 1
