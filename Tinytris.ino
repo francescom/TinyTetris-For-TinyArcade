@@ -18,6 +18,7 @@
 #include "colors.h"
 #include "game.h"
 #include "tinygraphics.h"
+#include "Storage.h"
 
 
 #include "audio/brb.h"
@@ -27,8 +28,33 @@
 
 unsigned long millisTime;
 
-SdFat sd;
+typedef char hiName[32];
 
+struct Preferences {
+    hiName hiNames[10]={
+      "                               ",
+      "                               ",
+      "                               ",
+      "                               ",
+      "                               ",
+      "                               ",
+      "                               ",
+      "                               ",
+      "                               ",
+      "                               "};
+    uint32_t hiScores[10]={0,0,0,0,0,0,0,0,0,0};
+    uint32_t lastScore;
+    boolean musicOn=true;
+    boolean effectsOn=true;
+    boolean other1On=true;
+    boolean other2On=true;
+    uint8_t prefsVersion=0;
+};
+
+
+SdFat sd;
+Storage filePrefs;
+Preferences memPrefs;
 
 
 TinyScreen display = TinyScreen(TinyScreenPlus);
@@ -38,7 +64,7 @@ AudioItemRawData8bit hitEffect; // (0,(unsigned char*)brb,4412);
 AudioItemRawData8bit freezeEffect; // (0,(unsigned char*)brb,4412);
 AudioItemRawData8bit lostEffect; // (0,(unsigned char*)brb,4412);
 AudioItemRawData8bit dropLineEffect[4]; // (0,(unsigned char*)brb,4412);
-AudioItemFile testStream; // (0,(char*)"/Tinytris/music.raw");
+AudioItemFile testStream; // (0,(char*)MUSIC_FILE);
 
 AudioItemWave testSoundWave; // (0,waveGeneratorTest);
 AudioItemNote testSoundNote; // (0,playSineFreq);
@@ -90,7 +116,7 @@ void setup () {
   dropLineEffect[2].volumePerc=50;
   dropLineEffect[3].volumePerc=50;
   
-  testStream.init(0,(char*)"/Tinytris/music.raw");
+  testStream.init(0,(char*)MUSIC_FILE);
   testStream.loop=true;
   audioTimeline.loop=true;
   testStream.volumePerc=50;
@@ -101,6 +127,9 @@ void setup () {
   tcStartCounter();
 
   // audioTimeline.playEffect((AudioItem*)&dropLineEffect[0]);
+
+  filePrefs.persist((void*)&memPrefs,(uint32_t)sizeof(Preferences),(char*)PREFS_FILE);
+  if(filePrefs.load()==-1) filePrefs.save(); // Create new prefs if error on load
 }
 
 
