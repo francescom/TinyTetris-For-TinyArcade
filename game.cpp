@@ -23,6 +23,7 @@ extern AudioItemRawData8bit freezeEffect;
 
 bool audioIsPaused=false; // this is exported outside // unused at the moment this was for old "midi type/notes" music
 bool gameIsOver=false;
+bool gamePaused=false;
 bool audioOn=true; // this saves value after GameOvers
 
 
@@ -498,6 +499,10 @@ void gameOver() {
 }
 
 
+void showMenu() {
+  
+}
+
 
 void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 	
@@ -513,16 +518,19 @@ void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 	
 	if(btnR && btnL) {
     audioInterruptPaused=true;
+    // showMenu(); here and skip resetGame..
+
  		resetGame();
 		delay(1000);
     audioInterruptPaused=false;
-	}
+    gamePaused=true;
+ 	}
 
     int delayAfterRender=0;
     char scoreStr[20];
     String(score/10).toCharArray(scoreStr,20);
     
-	if(gameStatus!=99) { // Not game over
+	if(gameStatus!=99 && !gamePaused) { // Not game over
 		
 		if(false) {
 			audioOn=!audioOn;
