@@ -111,6 +111,7 @@ void setup () {
   dropLineEffect[3].init(0,(unsigned char*)ting,6457);
   
   hitEffect.volumePerc=15;
+  lostEffect.volumePerc=150;
   dropLineEffect[0].volumePerc=50;
   dropLineEffect[1].volumePerc=50;
   dropLineEffect[2].volumePerc=50;

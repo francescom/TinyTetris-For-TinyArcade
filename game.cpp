@@ -518,12 +518,12 @@ void gameLoop(int lX,int lY,int rX,int rY,int buttons) {
 	
 	if(btnR && btnL) {
     audioInterruptPaused=true;
+    // gamePaused=true;
     // showMenu(); here and skip resetGame..
 
  		resetGame();
 		delay(1000);
     audioInterruptPaused=false;
-    gamePaused=true;
  	}
 
     int delayAfterRender=0;
