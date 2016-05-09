@@ -212,7 +212,7 @@ void drawBackground() {
           drawBackBlockAt(x*4,y*4);
         }
     }
-    delay(10);
+    delay(20);
   }
 
    for(int y=0;y<16;y++) {
@@ -220,14 +220,15 @@ void drawBackground() {
       if(x%2!=0 && y%2!=0) drawBackBlockAt(x*4,y*4);
     }
   }
-   delay(10);
+   delay(20);
    
    for(int y=0;y<16;y++) {
     for(int x=0;x<24;x++) {
       if(x%2 !=y%2) drawBackBlockAt(x*4,y*4);
     }
   }
-
+  delay(200);
+ 
 	int left=xOrigin-blockSize*fieldWidth/2;
 	int top=yOrigin-blockSize*fieldHeight;
 	int right=xOrigin+blockSize*fieldWidth/2;
@@ -236,7 +237,14 @@ void drawBackground() {
 	
   for(int x=10;x>=0;x--) {
   	fillRect(left+x,0,right-x,65,0x000000);
-    delay(20-x*2);
+    drawLine(left+x-1,0,left+x-1,63,colorTint(0xffffff,-10));
+    drawLine(left+x-2,0,left+x-2,63,colorTint(0xffffff,-10));
+    drawLine(left+x-3,0,left+x-3,63,colorTint(0xffffff,-10));
+    
+    drawLine(right-x+1,0,right-x+1,63,colorTint(0xffffff,-10));
+    drawLine(right-x+2,0,right-x+2,63,colorTint(0xffffff,-10));
+    drawLine(right-x+3,0,right-x+3,63,colorTint(0xffffff,-10));
+    delay(100-x*10);
   }
 	drawLine(left-1,0,left-1,63,colorTint(0xffffff,-10));
 	drawLine(left-2,0,left-2,63,colorTint(0xffffff,0));
