@@ -18,6 +18,21 @@ Music is a personal arrangement, made with Garageband, derived from a classic "K
 https://en.wikipedia.org/wiki/Korobeiniki
 
 
+
+To use your own music, export audio to this format.
+
+Set frequency to 11025Hz, mono
+
+Export to format (names are from free software Audacity):
+
+    Other uncompressed formats
+        Raw (header-less)
+            Unsigned 8-bit PCM
+
+
+and call it "music.raw".
+
+
 **Help**
 
 - Joystick moves pieces left + right + down=fast
@@ -30,3 +45,12 @@ https://en.wikipedia.org/wiki/Korobeiniki
 
 - Hi scores +prefs on µSD: at the moment a blank prefs file is saved inside the app folder
 - a global options menu (start, pause, restart, mute effects, mute music, change size, show scores)
+
+
+**Possible fixes**
+
+If it doesn't link correctly reporting a lot of "undefined reference to" all files into subfolders
+- keep the original folders (files are needed for includes "#include TinyAudio/TinyAudioLib/somefile.h")
+- drag duplicate copies of all the source files inside TinyAudio/TinyAudioLib amd inside audio to the main folder (both .cpp and .h files, .cpp files expect .h files to be on the same level)
+- close and reopen the .ino sketch
+- tell the IDE people to fix compilation of subfolders

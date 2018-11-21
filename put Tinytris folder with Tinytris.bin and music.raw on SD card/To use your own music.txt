@@ -1,0 +1,14 @@
+To use your own music, export audio to this format.
+
+
+Set frequency to 11025Hz, mono
+
+
+Export to format (names are from free software Audacity):
+
+	Other uncompressed formats
+		Raw (header-less)
+			Unsigned 8-bit PCM
+			
+
+and call it "music.raw".
